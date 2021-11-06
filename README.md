@@ -36,31 +36,19 @@ Generate knowledge graphs with interesting geometries, like lattices.
 
 ## 💪 Getting Started
 
-> TODO show in a very small amount of space the **MOST** useful thing your package can do.
-Make it as short as possible! You have an entire set of docs for later.
+See https://github.com/cthoyt/translational-toys for example usage to generate
+charts like 
 
-### Command Line Interface
-
-The geometric_graphs command line tool is automatically installed. It can
-be used from the shell with the `--help` flag to show all subcommands:
-
-```shell
-$ geometric_graphs --help
-```
-
-> TODO show the most useful thing the CLI does! The CLI will have documentation auto-generated
-by `sphinx`.
+![](https://github.com/cthoyt/translational-toys/raw/main/results/line/embedding.gif).
 
 ## 🚀 Installation
 
-<!-- Uncomment this section after your first ``tox -e finish``
 The most recent release can be installed from
 [PyPI](https://pypi.org/project/geometric_graphs/) with:
 
 ```bash
 $ pip install geometric_graphs
 ```
--->
 
 The most recent code and data can be installed directly from GitHub with:
 
