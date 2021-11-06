@@ -208,3 +208,30 @@ def _hex_grid_helper(rows: int, columns: int) -> List[List[int]]:
     _append_row(columns + (1 + rows) % 2)
 
     return rv
+
+
+@dataclass
+class ChainFactory(Factory):
+    """A factory for a two-dimensional hexagonal grid."""
+
+    # Number of main elements in the chain
+    length: int
+    # Number of elements in each chain bubble
+    width: int
+
+    def __post_init__(self):
+        if self.length < 3:
+            raise ValueError
+        if self.width < 2:
+            raise ValueError
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for a two-dimensional square grid."""
+        c = 0
+
+        for _ in range(self.length):
+            current_main = c
+            lasts = [current_main for _ in range(self.links)]
+
+            for _ in range(self.width):
+                ...
