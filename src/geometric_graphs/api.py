@@ -14,6 +14,9 @@ __all__ = [
     # Lines
     "line_factory",
     "LineFactory",
+    # Circles
+    "circle_factory",
+    "CircleFactory",
     # Square grid
     "square_grid_factory",
     "SquareGrid2DFactory",
@@ -60,6 +63,31 @@ class LineFactory(Factory):
         """Yield triples for a one-dimensional line."""
         for head, tail in pairwise(range(self.n)):
             yield head, 0, tail
+
+
+def circle_factory(num_entities: int, create_inverse_triples: bool = False):
+    """Create a triples factory on a line of ``num_entities`` elements.
+
+    :param num_entities: the number of entities in the line
+    :param create_inverse_triples: Should inverse triples be created?
+    :returns: A PyKEEN triples factory
+    """
+    return CircleFactory(num_entities).to_pykeen(create_inverse_triples=create_inverse_triples)
+
+
+@dataclass
+class CircleFactory(LineFactory):
+    """A factory for a circle.
+
+    An extension of a line factory that includes an additional
+    triple to close the loop between the first and last elements.
+    """
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for a circle."""
+        yield from super().iterate_triples()
+        # Finally, close the loop
+        yield self.n - 1, 0, 0
 
 
 def square_grid_factory(rows: int, columns: int, create_inverse_triples: bool = False):
