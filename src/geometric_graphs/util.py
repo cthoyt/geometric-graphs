@@ -13,6 +13,10 @@ __all__ = [
 class Factory:
     """A base factory for generating triples for a geometric graph."""
 
+    def get_triples(self) -> list[tuple[int, int, int]]:
+        """List triples for the graph."""
+        return list(self.iterate_triples())
+
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
         """Yield triples for the graph."""
         raise NotImplementedError
