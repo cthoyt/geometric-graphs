@@ -2,8 +2,9 @@
 
 """Generator classes."""
 
+import math
 from dataclasses import dataclass
-from itertools import count, repeat
+from itertools import combinations, count, repeat
 from typing import Iterable, Optional
 
 from more_itertools import chunked, pairwise
@@ -18,6 +19,7 @@ __all__ = [
     "ChainGenerator",
     "StarGenerator",
     "WheelGenerator",
+    "BarbellGenerator",
 ]
 
 
@@ -237,3 +239,35 @@ class WheelGenerator(StarGenerator):
         for left, right in pairwise(range(1, self.spokes + 1)):
             yield left, 1, right
         yield self.spokes, 1, 1
+
+
+@dataclass
+class BarbellGenerator(Generator):
+    """A generator for a barbell graph.
+
+    .. seealso:: https://en.wikipedia.org/wiki/Barbell_graph
+    """
+
+    #: The size of the barbell
+    n: int
+
+    def number_of_nodes(self) -> int:
+        """Return the number of nodes for the barbell."""
+        return self.n * 2
+
+    def number_of_edges(self) -> int:
+        """Return the number of edges for the barbell."""
+        return 2 * math.comb(self.n, 2) + 1
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for the barbell graph."""
+        west = range(self.n)
+        east = range(self.n, 2 * self.n)
+        for head, tail in combinations(west, 2):
+            yield head, 0, tail
+        for head, tail in combinations(east, 2):
+            yield head, 0, tail
+        yield 0, 1, self.n
+        # TODO make a more balanced clique generator that
+        # goes in a loop, then goes in a loop for 2-negihbors
+        # then 3 neighbors, then so on until all connected.

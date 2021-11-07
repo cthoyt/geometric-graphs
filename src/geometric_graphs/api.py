@@ -5,6 +5,7 @@
 from class_resolver import Resolver
 
 from .generators import (
+    BarbellGenerator,
     ChainGenerator,
     CircleGenerator,
     HexagonalGrid2DGenerator,
@@ -25,6 +26,7 @@ __all__ = [
     "hex_grid_factory",
     "star_factory",
     "wheel_factory",
+    "barbell_factory",
 ]
 
 generator_resolver = Resolver.from_subclasses(Generator)
@@ -158,4 +160,14 @@ def wheel_factory(
     return WheelGenerator(
         spokes=spokes,
         sink=sink,
+    ).to_pykeen(create_inverse_triples=create_inverse_triples)
+
+
+def barbell_factory(
+    n: int,
+    create_inverse_triples: bool = False,
+):
+    """Create a barbell graph of the given size."""
+    return BarbellGenerator(
+        n=n,
     ).to_pykeen(create_inverse_triples=create_inverse_triples)

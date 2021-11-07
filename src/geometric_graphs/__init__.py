@@ -3,6 +3,7 @@
 """Generate knowledge graphs with interesting geometries, like lattices."""
 
 from .api import (  # noqa:F401
+    barbell_factory,
     chain_factory,
     circle_factory,
     generator_resolver,
@@ -13,6 +14,7 @@ from .api import (  # noqa:F401
     wheel_factory,
 )
 from .generators import (  # noqa:F401
+    BarbellGenerator,
     ChainGenerator,
     CircleGenerator,
     HexagonalGrid2DGenerator,

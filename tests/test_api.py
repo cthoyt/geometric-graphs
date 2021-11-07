@@ -6,6 +6,7 @@ import unittest
 from typing import Iterable
 
 from geometric_graphs.generators import (
+    BarbellGenerator,
     ChainGenerator,
     StarGenerator,
     WheelGenerator,
@@ -237,3 +238,8 @@ class TestGenerators(unittest.TestCase):
             (9, 0, 10),
         ]
         self.assert_generator(triples, generator)
+
+    def test_barbell(self):
+        """Test the barbell generator."""
+        triples = [(0, 0, 1), (0, 0, 2), (1, 0, 2), (3, 0, 4), (3, 0, 5), (4, 0, 5), (0, 1, 3)]
+        self.assert_generator(triples, BarbellGenerator(3))
