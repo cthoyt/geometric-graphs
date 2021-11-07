@@ -26,6 +26,12 @@ __all__ = [
     # Hexagonal grid
     "hex_grid_factory",
     "HexagonalGrid2DFactory",
+    # Star
+    "star_factory",
+    "StarFactory",
+    # Wheel
+    "wheel_factory",
+    "WheelFactory",
 ]
 
 
