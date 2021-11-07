@@ -4,7 +4,7 @@
 
 from dataclasses import dataclass
 from itertools import count, repeat
-from typing import Iterable
+from typing import Iterable, Optional
 
 from more_itertools import chunked, pairwise
 
@@ -63,6 +63,14 @@ class LineFactory(Factory):
     #: Number of elements in the line
     n: int
 
+    def number_of_nodes(self) -> int:
+        """Return the number of nodes for a path of length ``n``."""
+        return self.n
+
+    def number_of_edges(self) -> int:  # noqa:D102
+        """Return the number of edges for a path of length ``n``."""
+        return self.n - 1
+
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
         """Yield triples for a one-dimensional line."""
         for head, tail in pairwise(range(self.n)):
@@ -86,6 +94,10 @@ class CircleFactory(LineFactory):
     An extension of a line factory that includes an additional
     triple to close the loop between the first and last elements.
     """
+
+    def number_of_edges(self) -> int:  # noqa:D102
+        """Return the number of edges for a circle of size ``n``."""
+        return self.n
 
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
         """Yield triples for a circle."""
@@ -127,8 +139,16 @@ class SquareGrid2DFactory(Factory):
     #: Number of columns in the grid
     columns: int
 
+    def number_of_nodes(self) -> Optional[int]:
+        """Return the number of nodes for the two-dimensional square grid.."""
+        return self.rows * self.columns
+
+    def number_of_edges(self) -> Optional[int]:
+        """Return the number of edges for the two-dimensional square grid.."""
+        return self.rows * self.columns
+
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
-        """Yield triples for a two-dimensional square grid."""
+        """Yield triples for the two-dimensional square grid."""
         num_entities = self.rows * self.columns
 
         chunks = list(chunked(range(num_entities), self.rows))
