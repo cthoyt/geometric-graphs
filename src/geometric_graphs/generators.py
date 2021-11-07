@@ -327,7 +327,7 @@ class LollipopGenerator(Generator):
 
     @classmethod
     def special(cls, k: int, sink: bool = False) -> LollipopGenerator:
-        """Generate a special lollipop graph from a single parameter.
+        r"""Generate a special lollipop graph from a single parameter.
 
         This parametrization achieves maximal
         `hitting time <https://en.wikipedia.org/wiki/Hitting_time>`_.
@@ -353,7 +353,7 @@ class LollipopGenerator(Generator):
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
         """Yield triples for the lollipop graph."""
         for head, tail in combinations(range(self.m), 2):
-            yield head, 0, tail
+            yield head, 0, tail  # FIXME more balanced clique generation
         for head, tail in pairwise(range(self.m - 1, self.m + self.n)):
             if self.sink:
                 yield tail, 1, head

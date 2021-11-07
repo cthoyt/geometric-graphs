@@ -10,8 +10,10 @@ from .generators import (
     CircleGenerator,
     HexagonalGrid2DGenerator,
     LineGenerator,
+    LollipopGenerator,
     SquareGrid2DGenerator,
     StarGenerator,
+    TadpoleGenerator,
     WheelGenerator,
 )
 from .util import Generator
@@ -27,6 +29,8 @@ __all__ = [
     "star_factory",
     "wheel_factory",
     "barbell_factory",
+    "tadpole_factory",
+    "lollipop_factory",
 ]
 
 generator_resolver = Resolver.from_subclasses(Generator)
@@ -170,4 +174,22 @@ def barbell_factory(
     """Create a barbell graph of the given size."""
     return BarbellGenerator(
         n=n,
+    ).to_pykeen(create_inverse_triples=create_inverse_triples)
+
+
+def tadpole_factory(m: int, n: int, sink: bool = False, create_inverse_triples: bool = False):
+    """Create a tadpole graph."""
+    return TadpoleGenerator(
+        m=m,
+        n=n,
+        sink=sink,
+    ).to_pykeen(create_inverse_triples=create_inverse_triples)
+
+
+def lollipop_factory(m: int, n: int, sink: bool = False, create_inverse_triples: bool = False):
+    """Create a lollipop graph."""
+    return LollipopGenerator(
+        m=m,
+        n=n,
+        sink=sink,
     ).to_pykeen(create_inverse_triples=create_inverse_triples)
