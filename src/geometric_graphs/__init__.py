@@ -9,8 +9,10 @@ from .api import (  # noqa:F401
     generator_resolver,
     hex_grid_factory,
     line_factory,
+    lollipop_factory,
     square_grid_factory,
     star_factory,
+    tadpole_factory,
     wheel_factory,
 )
 from .generators import (  # noqa:F401
@@ -19,7 +21,9 @@ from .generators import (  # noqa:F401
     CircleGenerator,
     HexagonalGrid2DGenerator,
     LineGenerator,
+    LollipopGenerator,
     SquareGrid2DGenerator,
     StarGenerator,
+    TadpoleGenerator,
     WheelGenerator,
 )

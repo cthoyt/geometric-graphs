@@ -8,7 +8,9 @@ from typing import Iterable
 from geometric_graphs.generators import (
     BarbellGenerator,
     ChainGenerator,
+    LollipopGenerator,
     StarGenerator,
+    TadpoleGenerator,
     WheelGenerator,
     _hex_grid_helper,
 )
@@ -243,3 +245,39 @@ class TestGenerators(unittest.TestCase):
         """Test the barbell generator."""
         triples = [(0, 0, 1), (0, 0, 2), (1, 0, 2), (3, 0, 4), (3, 0, 5), (4, 0, 5), (0, 1, 3)]
         self.assert_generator(triples, BarbellGenerator(3))
+
+    def test_tadpole(self):
+        """Test the tadpole generator."""
+        triples = [
+            (0, 0, 1),
+            (1, 0, 2),
+            (2, 0, 3),
+            (3, 0, 0),
+            (3, 1, 4),
+            (4, 1, 5),
+        ]
+        self.assert_generator(triples, TadpoleGenerator(4, 2, sink=False))
+
+        triples = [
+            (0, 0, 1),
+            (1, 0, 2),
+            (2, 0, 3),
+            (3, 0, 0),
+            (4, 1, 3),
+            (5, 1, 4),
+        ]
+        self.assert_generator(triples, TadpoleGenerator(4, 2, sink=True))
+
+    def test_lollipop(self):
+        """Test the tadpole generator."""
+        triples = [
+            (0, 0, 1),
+            (0, 0, 2),
+            (0, 0, 3),
+            (1, 0, 2),
+            (1, 0, 3),
+            (2, 0, 3),
+            (3, 1, 4),
+            (4, 1, 5),
+        ]
+        self.assert_generator(triples, LollipopGenerator(4, 2, sink=False))

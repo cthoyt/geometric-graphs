@@ -2,6 +2,8 @@
 
 """Generator classes."""
 
+from __future__ import annotations
+
 import math
 from dataclasses import dataclass
 from itertools import combinations, count, repeat
@@ -20,6 +22,8 @@ __all__ = [
     "StarGenerator",
     "WheelGenerator",
     "BarbellGenerator",
+    "TadpoleGenerator",
+    "LollipopGenerator",
 ]
 
 
@@ -271,3 +275,87 @@ class BarbellGenerator(Generator):
         # TODO make a more balanced clique generator that
         # goes in a loop, then goes in a loop for 2-negihbors
         # then 3 neighbors, then so on until all connected.
+
+
+@dataclass
+class TadpoleGenerator(Generator):
+    """A generator for a tadpole graph.
+
+    .. seealso:: https://en.wikipedia.org/wiki/Tadpole_graph
+    """
+
+    #: The size of the cycle
+    m: int
+    #: The length of the path
+    n: int
+    #: If true, the path edges point towards the cycle
+    sink: bool = False
+
+    def number_of_nodes(self) -> int:
+        """Return the number of nodes for the tadpole."""
+        return self.m + self.n
+
+    def number_of_edges(self) -> int:
+        """Return the number of edges for the tadpole."""
+        return self.m + self.n
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for the tadpole graph."""
+        for head, tail in pairwise(range(self.m)):
+            yield head, 0, tail
+        yield self.m - 1, 0, 0
+        for head, tail in pairwise(range(self.m - 1, self.m + self.n)):
+            if self.sink:
+                yield tail, 1, head
+            else:
+                yield head, 1, tail
+
+
+@dataclass
+class LollipopGenerator(Generator):
+    """A generator for a lollipop graph.
+
+    .. seealso:: https://en.wikipedia.org/wiki/Lollipop_graph
+    """
+
+    #: The size of the clique
+    m: int
+    #: The length of the path
+    n: int
+    #: If true, the path edges point towards the cycle
+    sink: bool = False
+
+    @classmethod
+    def special(cls, k: int, sink: bool = False) -> LollipopGenerator:
+        r"""Generate a special lollipop graph from a single parameter.
+
+        This parametrization achieves maximal
+        `hitting time <https://en.wikipedia.org/wiki/Hitting_time>`_.
+
+        :param k: The standard parameters are calculated by $m = \frac{2}{3}k$
+            and $n=\frac{1/3}k$.
+        :param sink: If true, the path edges point towards the cycle
+        :return: A lollipop generator.
+        :raises ValueError: if $k$ is not divisible by 3
+        """
+        if k % 3 != 0:
+            raise ValueError("value must be divisible by 3")
+        return cls(m=2 * k // 3, n=k // 3, sink=sink)
+
+    def number_of_nodes(self) -> int:
+        """Return the number of nodes for the lollipop graph."""
+        return self.m + self.n
+
+    def number_of_edges(self) -> int:
+        """Return the number of edges for the lollipop graph."""
+        return math.comb(self.m, 2) + self.n
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for the lollipop graph."""
+        for head, tail in combinations(range(self.m), 2):
+            yield head, 0, tail  # FIXME more balanced clique generation
+        for head, tail in pairwise(range(self.m - 1, self.m + self.n)):
+            if self.sink:
+                yield tail, 1, head
+            else:
+                yield head, 1, tail
