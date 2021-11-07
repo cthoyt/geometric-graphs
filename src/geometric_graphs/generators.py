@@ -20,6 +20,8 @@ __all__ = [
     "StarGenerator",
     "WheelGenerator",
     "BarbellGenerator",
+    "TadpoleGenerator",
+    "LollipopGenerator",
 ]
 
 
@@ -288,18 +290,51 @@ class TadpoleGenerator(Generator):
     sink: bool = False
 
     def number_of_nodes(self) -> int:
-        """Return the number of nodes for the barbell."""
+        """Return the number of nodes for the tadpole."""
         return self.m + self.n
 
     def number_of_edges(self) -> int:
-        """Return the number of edges for the barbell."""
+        """Return the number of edges for the tadpole."""
         return self.m + self.n
 
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
-        """Yield triples for the barbell graph."""
+        """Yield triples for the tadpole graph."""
         for head, tail in pairwise(range(self.m)):
             yield head, 0, tail
         yield self.m - 1, 0, 0
+        for head, tail in pairwise(range(self.m - 1, self.m + self.n)):
+            if self.sink:
+                yield tail, 1, head
+            else:
+                yield head, 1, tail
+
+
+@dataclass
+class LollipopGenerator(Generator):
+    """A generator for a lollipop graph.
+
+    .. seealso:: https://en.wikipedia.org/wiki/Lollipop_graph
+    """
+
+    #: The size of the clique
+    m: int
+    #: The length of the path
+    n: int
+    #: If true, the path edges point towards the cycle
+    sink: bool = False
+
+    def number_of_nodes(self) -> int:
+        """Return the number of nodes for the lollipop graph."""
+        return self.m + self.n
+
+    def number_of_edges(self) -> int:
+        """Return the number of edges for the lollipop graph."""
+        return math.comb(self.m, 2) + self.n
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for the lollipop graph."""
+        for head, tail in combinations(range(self.m), 2):
+            yield head, 0, tail
         for head, tail in pairwise(range(self.m - 1, self.m + self.n)):
             if self.sink:
                 yield tail, 1, head

@@ -19,7 +19,9 @@ from .generators import (  # noqa:F401
     CircleGenerator,
     HexagonalGrid2DGenerator,
     LineGenerator,
+    LollipopGenerator,
     SquareGrid2DGenerator,
     StarGenerator,
+    TadpoleGenerator,
     WheelGenerator,
 )
