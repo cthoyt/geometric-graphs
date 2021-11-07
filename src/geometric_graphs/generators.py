@@ -271,3 +271,37 @@ class BarbellGenerator(Generator):
         # TODO make a more balanced clique generator that
         # goes in a loop, then goes in a loop for 2-negihbors
         # then 3 neighbors, then so on until all connected.
+
+
+@dataclass
+class TadpoleGenerator(Generator):
+    """A generator for a tadpole graph.
+
+    .. seealso:: https://en.wikipedia.org/wiki/Tadpole_graph
+    """
+
+    #: The size of the cycle
+    m: int
+    #: The length of the path
+    n: int
+    #: If true, the path edges point towards the cycle
+    sink: bool = False
+
+    def number_of_nodes(self) -> int:
+        """Return the number of nodes for the barbell."""
+        return self.m + self.n
+
+    def number_of_edges(self) -> int:
+        """Return the number of edges for the barbell."""
+        return self.m + self.n
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for the barbell graph."""
+        for head, tail in pairwise(range(self.m)):
+            yield head, 0, tail
+        yield self.m - 1, 0, 0
+        for head, tail in pairwise(range(self.m - 1, self.m + self.n)):
+            if self.sink:
+                yield tail, 1, head
+            else:
+                yield head, 1, tail
