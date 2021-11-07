@@ -222,6 +222,7 @@ class ChainFactory(Factory):
     # Number of elements in each chain bubble
     width: int
     leaves: int = 2
+    heterogeneous: bool = False
 
     def __post_init__(self):
         if self.length < 2:
@@ -240,17 +241,28 @@ class ChainFactory(Factory):
 
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
         """Yield triples for a two-dimensional square grid."""
+        if self.heterogeneous:
+            begin, cont, end = 0, 1, 2
+        else:
+            begin, cont, end = 0, 0, 0
+
         c = 0
         for _ in range(self.length - 1):
-            lasts = [c for _ in range(self.leaves)]
-            for _ in range(self.width):
+            first = c
+            lasts = []
+            for _ in range(self.leaves):
+                c += 1
+                lasts.append(c)
+                yield first, begin, c
+
+            for _ in range(self.width - 1):
                 nexts = []
                 for _ in range(self.leaves):
                     c += 1
                     nexts.append(c)
                 for left, right in zip(lasts, nexts):
-                    yield left, 0, right
+                    yield left, cont, right
                 lasts = nexts
             c += 1
             for last in lasts:
-                yield last, 0, c
+                yield last, end, c
