@@ -4,7 +4,7 @@
 
 import unittest
 
-from geometric_graphs.api import _hex_grid_helper
+from geometric_graphs.api import ChainFactory, _hex_grid_helper
 
 
 class TestFactories(unittest.TestCase):
@@ -138,3 +138,35 @@ class TestFactories(unittest.TestCase):
                 )
                 self.assertEqual(len(expected), len(grid), msg="grid should be 2 * (1 + rows) long")
                 self.assertEqual(expected, grid)
+
+    def test_chain(self):
+        """Test the chain factory."""
+        factory = ChainFactory(length=3, width=1)
+        triples = [
+            (0, 0, 1),
+            (0, 0, 2),
+            (1, 0, 3),
+            (2, 0, 3),
+            (3, 0, 4),
+            (3, 0, 5),
+            (4, 0, 6),
+            (5, 0, 6),
+        ]
+        self.assertEqual(triples, list(factory.get_triples()))
+
+        factory = ChainFactory(length=3, width=2)
+        triples = [
+            (0, 0, 1),
+            (0, 0, 2),
+            (1, 0, 3),
+            (2, 0, 4),
+            (3, 0, 5),
+            (4, 0, 5),
+            (5, 0, 6),
+            (5, 0, 7),
+            (6, 0, 8),
+            (7, 0, 9),
+            (8, 0, 10),
+            (9, 0, 10),
+        ]
+        self.assertEqual(triples, list(factory.get_triples()))

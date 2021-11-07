@@ -211,3 +211,58 @@ def _hex_grid_helper(rows: int, columns: int) -> list[list[int]]:
     _append_row(columns + (1 + rows) % 2)
 
     return rv
+
+
+@dataclass
+class ChainFactory(Factory):
+    """A factory for a two-dimensional hexagonal grid."""
+
+    # Number of main elements in the chain
+    length: int
+    # Number of elements in each chain bubble
+    width: int
+    leaves: int = 2
+    heterogeneous: bool = False
+
+    def __post_init__(self):
+        if self.length < 2:
+            raise ValueError(
+                "Length of a chain must be 2 or greater. A chain of length 1 is just a single node"
+            )
+        if self.width < 1:
+            raise ValueError(
+                "Width of a chain must be 1 or greater. A chain with length 0 is just a line"
+            )
+        if self.leaves < 2:
+            # Then it would just be a line
+            raise ValueError(
+                "Number of leaves must be 2 or greater. A chain with a single leaf is just a line."
+            )
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for a two-dimensional square grid."""
+        if self.heterogeneous:
+            begin, cont, end = 0, 1, 2
+        else:
+            begin, cont, end = 0, 0, 0
+
+        c = 0
+        for _ in range(self.length - 1):
+            first = c
+            lasts = []
+            for _ in range(self.leaves):
+                c += 1
+                lasts.append(c)
+                yield first, begin, c
+
+            for _ in range(self.width - 1):
+                nexts = []
+                for _ in range(self.leaves):
+                    c += 1
+                    nexts.append(c)
+                for left, right in zip(lasts, nexts):
+                    yield left, cont, right
+                lasts = nexts
+            c += 1
+            for last in lasts:
+                yield last, end, c
