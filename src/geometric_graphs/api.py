@@ -146,11 +146,11 @@ class SquareGrid2DFactory(Factory):
     columns: int
 
     def number_of_nodes(self) -> Optional[int]:
-        """Return the number of nodes for the two-dimensional square grid.."""
+        """Return the number of nodes for the two-dimensional square grid."""
         return self.rows * self.columns
 
     def number_of_edges(self) -> Optional[int]:
-        """Return the number of edges for the two-dimensional square grid.."""
+        """Return the number of edges for the two-dimensional square grid."""
         return self.rows * self.columns
 
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
@@ -334,6 +334,14 @@ class StarFactory(Factory):
     #: If true, make all edges point towards centers.
     sink: bool = False
 
+    def number_of_nodes(self) -> Optional[int]:
+        """Return the number of nodes for the star."""
+        return self.spokes + 1
+
+    def number_of_edges(self) -> Optional[int]:
+        """Return the number of edges for the star."""
+        return self.spokes
+
     def __post_init__(self) -> None:
         """Check the arguments are valid."""
         if self.spokes < 3:
@@ -364,8 +372,13 @@ def wheel_factory(
 class WheelFactory(StarFactory):
     """A factory for the wheel graph."""
 
+    def number_of_edges(self) -> Optional[int]:
+        """Return the number of edges for the wheel."""
+        return 2 * self.spokes
+
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
         """Yield triples for the wheel graph."""
         yield from super().iterate_triples()
         for left, right in pairwise(range(1, self.spokes + 1)):
             yield left, 1, right
+        yield self.spokes, 1, 1
