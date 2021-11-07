@@ -6,7 +6,6 @@ import unittest
 from typing import Iterable
 
 from geometric_graphs.api import ChainFactory, StarFactory, WheelFactory, _hex_grid_helper
-from geometric_graphs.api import ChainFactory, _hex_grid_helper
 from geometric_graphs.util import Factory
 
 
