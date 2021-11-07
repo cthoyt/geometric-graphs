@@ -4,7 +4,7 @@
 
 from dataclasses import dataclass
 from itertools import count, repeat
-from typing import Iterable, List, Tuple
+from typing import Iterable
 
 from more_itertools import chunked, pairwise
 
@@ -31,6 +31,7 @@ def line_factory(num_entities: int, create_inverse_triples: bool = False):
 
     :param num_entities: the number of entities in the line
     :param create_inverse_triples: Should inverse triples be created?
+    :rtype: pykeen.triples.CoreTriplesFactory
     :returns: A PyKEEN triples factory
 
     If you run ``line_factory(5)``, you will get the following knowledge graph:
@@ -96,6 +97,7 @@ def square_grid_factory(rows: int, columns: int, create_inverse_triples: bool = 
     :param rows: The number of rows in the square grid
     :param columns: The number of columns in the square grid
     :param create_inverse_triples: Should inverse triples be created?
+    :rtype: pykeen.triples.CoreTriplesFactory
     :returns: A PyKEEN triples factory
 
     If you run ``mesh_factory(2, 5)``, you will get the following knowledge graph:
@@ -143,6 +145,7 @@ def hex_grid_factory(rows: int, columns: int, create_inverse_triples: bool = Fal
         will be an even row
     :param columns: The minor row width (major rows have rows + 1)
     :param create_inverse_triples: Should inverse triples be created?
+    :rtype: pykeen.triples.CoreTriplesFactory
     :returns: A PyKEEN triples factory
 
     If you run ``hex_factory(rows=1, columns=3)``, you will get the following knowledge graph:
@@ -174,7 +177,7 @@ class HexagonalGrid2DFactory(Factory):
 
     rows: int
     columns: int
-    labels: Tuple[int, int, int] = ((0, 1, 2),)
+    labels: tuple[int, int, int] = (0, 1, 2)
 
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
         """Yield triples for a two-dimensional square grid."""
@@ -190,7 +193,7 @@ class HexagonalGrid2DFactory(Factory):
                 yield from zip(r1[1:], repeat(left), r2)
 
 
-def _hex_grid_helper(rows: int, columns: int) -> List[List[int]]:
+def _hex_grid_helper(rows: int, columns: int) -> list[list[int]]:
     rv = []
     counter = count()
 
