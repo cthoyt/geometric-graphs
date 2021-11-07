@@ -33,6 +33,8 @@
 </p>
 
 Generate knowledge graphs with interesting geometries, like lattices.
+Works on Python 3.9+ because it uses cool new features. Get out of that 2020
+funk and install the most recent version of Python.
 
 ## 💪 Getting Started
 
