@@ -22,7 +22,12 @@ class Factory:
         raise NotImplementedError
 
     def to_pykeen(self, *, create_inverse_triples: bool = False):
-        """Generate a :mod:`pykeen` triples factory for the graph.."""
+        """Generate a :mod:`pykeen` triples factory for the graph.
+
+        :param create_inverse_triples: Should inverse triples be created?
+        :rtype: pykeen.triples.CoreTriplesFactory
+        :returns: A PyKEEN triples factory
+        """
         return from_tuples(
             self.iterate_triples(),
             create_inverse_triples=create_inverse_triples,
@@ -34,6 +39,7 @@ def from_tuples(triples: Iterable[Tuple[int, int, int]], create_inverse_triples:
 
     :param triples: An iterable of integer triples
     :param create_inverse_triples: Should inverse triples be created?
+    :rtype: pykeen.triples.CoreTriplesFactory
     :returns: A PyKEEN triples factory
     """
     import torch
