@@ -285,3 +285,61 @@ class ChainFactory(Factory):
             c += 1
             for last in lasts:
                 yield last, end, c
+
+
+def star_factory(
+    spokes: int,
+    sink: bool = False,
+    create_inverse_triples: bool = False,
+):
+    """Create a star graph of the given size."""
+    return StarFactory(
+        spokes=spokes,
+        sink=sink,
+    ).to_pykeen(create_inverse_triples=create_inverse_triples)
+
+
+@dataclass
+class StarFactory(Factory):
+    """A factory for the star graph."""
+
+    #: Number of spokes in the star
+    spokes: int
+    #: If true, make all edges point towards centers.
+    sink: bool = False
+
+    def __post_init__(self) -> None:
+        """Check the arguments are valid."""
+        if self.spokes < 3:
+            raise ValueError("There must be at least 3 spokes.")
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for stars."""
+        for spoke in range(1, self.spokes + 1):
+            if self.sink:
+                yield spoke, 0, 0
+            else:
+                yield 0, 0, spoke
+
+
+def wheel_factory(
+    spokes: int,
+    sink: bool = False,
+    create_inverse_triples: bool = False,
+):
+    """Create a wheel graph of the given size."""
+    return WheelFactory(
+        spokes=spokes,
+        sink=sink,
+    ).to_pykeen(create_inverse_triples=create_inverse_triples)
+
+
+@dataclass
+class WheelFactory(StarFactory):
+    """A factory for the wheel graph."""
+
+    def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
+        """Yield triples for the wheel graph."""
+        yield from super().iterate_triples()
+        for left, right in pairwise(range(1, self.spokes + 1)):
+            yield left, 1, right

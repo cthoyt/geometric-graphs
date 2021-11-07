@@ -3,12 +3,60 @@
 """Tests for knowledge graph factories."""
 
 import unittest
+from typing import Iterable
 
-from geometric_graphs.api import ChainFactory, _hex_grid_helper
+from geometric_graphs.api import ChainFactory, StarFactory, WheelFactory, _hex_grid_helper
+from geometric_graphs.util import Factory
 
 
 class TestFactories(unittest.TestCase):
     """A test case for knowledge graph factories."""
+
+    def assert_factory(self, triples: Iterable[tuple[int, int, int]], factory: Factory):
+        self.assertIsInstance(factory, Factory)
+        self.assertEqual(set(triples), set(factory.iterate_triples()))
+
+    def test_star(self):
+        """Test creating star graphs."""
+        triples = [
+            (0, 0, 1),
+            (0, 0, 2),
+            (0, 0, 3),
+        ]
+        factory = StarFactory(3, sink=False)
+        self.assert_factory(triples, factory)
+
+        triples = [
+            (1, 0, 0),
+            (2, 0, 0),
+            (3, 0, 0),
+        ]
+        factory = StarFactory(3, sink=True)
+        self.assert_factory(triples, factory)
+
+    def test_wheel(self):
+        """Test creating wheel graphs."""
+        triples = [
+            (0, 0, 1),
+            (0, 0, 2),
+            (0, 0, 3),
+            (1, 1, 2),
+            (2, 1, 3),
+            (3, 1, 1),
+        ]
+        factory = WheelFactory(3, sink=False)
+        self.assert_factory(triples, factory)
+
+        triples = [
+            (1, 0, 0),
+            (2, 0, 0),
+            (3, 0, 0),
+            (1, 1, 2),
+            (2, 1, 3),
+            (3, 1, 1),
+        ]
+        factory = WheelFactory(3, sink=True)
+        self.assert_factory(triples, factory)
 
     def test_hex_rows(self):
         """Test generating a two dimensional hexagonal grid graph."""
@@ -152,7 +200,7 @@ class TestFactories(unittest.TestCase):
             (4, 0, 6),
             (5, 0, 6),
         ]
-        self.assertEqual(triples, list(factory.get_triples()))
+        self.assert_factory(triples, factory)
 
         factory = ChainFactory(length=3, width=2, heterogeneous=False)
         triples = [
@@ -169,4 +217,4 @@ class TestFactories(unittest.TestCase):
             (8, 0, 10),
             (9, 0, 10),
         ]
-        self.assertEqual(triples, list(factory.get_triples()))
+        self.assert_factory(triples, factory)
