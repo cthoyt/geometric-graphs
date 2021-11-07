@@ -7,13 +7,13 @@ import pathlib
 from typing import Iterable, Iterator, Optional, Union, cast
 
 __all__ = [
-    "Factory",
+    "Generator",
     "from_tuples",
 ]
 
 
-class Factory:
-    """A base factory for generating triples for a geometric graph."""
+class Generator:
+    """A base generator for triples for a geometric graph."""
 
     def get_triples(self) -> list[tuple[int, int, int]]:
         """List triples for the graph."""
@@ -24,11 +24,11 @@ class Factory:
         raise NotImplementedError
 
     def number_of_nodes(self) -> Optional[int]:
-        """Calculate the number of nodes based on the parameters of the factory."""
+        """Calculate the number of nodes based on the parameters of the generator."""
         # FIXME make not optional later
 
     def number_of_edges(self) -> Optional[int]:
-        """Calculate the number of edges based on the parameters of the factory."""
+        """Calculate the number of edges based on the parameters of the generator."""
         # FIXME make not optional later
 
     def __iter__(self) -> Iterator[tuple[int, int, int]]:
@@ -43,7 +43,7 @@ class Factory:
         name: Optional[str] = None,
         **kwargs,
     ) -> None:
-        """Demo this factory with the given arguments (e.g., by drawing to the path)."""
+        """Demo this generator with the given arguments (e.g., by drawing to the path)."""
         inst = cls(*args, **kwargs)  # type:ignore
         inst.draw(path=path, name=name)
 
