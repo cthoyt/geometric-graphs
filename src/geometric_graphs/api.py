@@ -221,20 +221,36 @@ class ChainFactory(Factory):
     length: int
     # Number of elements in each chain bubble
     width: int
+    leaves: int = 2
 
     def __post_init__(self):
-        if self.length < 3:
-            raise ValueError
-        if self.width < 2:
-            raise ValueError
+        if self.length < 2:
+            raise ValueError(
+                "Length of a chain must be 2 or greater. A chain of length 1 is just a single node"
+            )
+        if self.width < 1:
+            raise ValueError(
+                "Width of a chain must be 1 or greater. A chain with length 0 is just a line"
+            )
+        if self.leaves < 2:
+            # Then it would just be a line
+            raise ValueError(
+                "Number of leaves must be 2 or greater. A chain with a single leaf is just a line."
+            )
 
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
         """Yield triples for a two-dimensional square grid."""
         c = 0
-
-        for _ in range(self.length):
-            current_main = c
-            lasts = [current_main for _ in range(self.links)]
-
+        for _ in range(self.length - 1):
+            lasts = [c for _ in range(self.leaves)]
             for _ in range(self.width):
-                ...
+                nexts = []
+                for _ in range(self.leaves):
+                    c += 1
+                    nexts.append(c)
+                for left, right in zip(lasts, nexts):
+                    yield left, 0, right
+                lasts = nexts
+            c += 1
+            for last in lasts:
+                yield last, 0, c
