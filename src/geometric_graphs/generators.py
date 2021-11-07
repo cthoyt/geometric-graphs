@@ -2,6 +2,8 @@
 
 """Generator classes."""
 
+from __future__ import annotations
+
 import math
 from dataclasses import dataclass
 from itertools import combinations, count, repeat
@@ -322,6 +324,23 @@ class LollipopGenerator(Generator):
     n: int
     #: If true, the path edges point towards the cycle
     sink: bool = False
+
+    @classmethod
+    def special(cls, k: int, sink: bool = False) -> LollipopGenerator:
+        """Generate a special lollipop graph from a single parameter.
+
+        This parametrization achieves maximal
+        `hitting time <https://en.wikipedia.org/wiki/Hitting_time>`_.
+
+        :param k: The standard parameters are calculated by $m = \frac{2}{3}k$
+            and $n=\frac{1/3}k$.
+        :param sink: If true, the path edges point towards the cycle
+        :return: A lollipop generator.
+        :raises ValueError: if $k$ is not divisible by 3
+        """
+        if k % 3 != 0:
+            raise ValueError("value must be divisible by 3")
+        return cls(m=2 * k // 3, n=k // 3, sink=sink)
 
     def number_of_nodes(self) -> int:
         """Return the number of nodes for the lollipop graph."""
