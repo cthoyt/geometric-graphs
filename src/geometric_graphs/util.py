@@ -4,7 +4,7 @@
 
 import os
 import pathlib
-from typing import Iterable, Optional, Union, cast
+from typing import Iterable, Iterator, Optional, Union, cast
 
 __all__ = [
     "Factory",
@@ -23,6 +23,10 @@ class Factory:
         """Yield triples for the graph."""
         raise NotImplementedError
 
+    def __iter__(self) -> Iterator[tuple[int, int, int]]:
+        """Yield triples for the graph."""
+        yield from self.iterate_triples()
+
     @classmethod
     def demo(
         cls,
@@ -37,7 +41,7 @@ class Factory:
 
     def draw(self, path: Union[str, pathlib.Path, os.PathLike], name: Optional[str] = None) -> None:
         """Draw the graph using GraphViz to the given file."""
-        draw(self.iterate_triples(), path=path, name=name)
+        draw(self, path=path, name=name)
 
     def to_pykeen(self, *, create_inverse_triples: bool = False):
         """Generate a :mod:`pykeen` triples factory for the graph.
@@ -47,7 +51,7 @@ class Factory:
         :returns: A PyKEEN triples factory
         """
         return from_tuples(
-            self.iterate_triples(),
+            self,
             create_inverse_triples=create_inverse_triples,
         )
 

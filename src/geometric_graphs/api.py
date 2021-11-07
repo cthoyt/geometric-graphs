@@ -17,6 +17,9 @@ __all__ = [
     # Circles
     "circle_factory",
     "CircleFactory",
+    # Chain
+    "ChainFactory",
+    "chain_factory",
     # Square grid
     "square_grid_factory",
     "SquareGrid2DFactory",
@@ -180,7 +183,7 @@ class HexagonalGrid2DFactory(Factory):
     labels: tuple[int, int, int] = (0, 1, 2)
 
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
-        """Yield triples for a two-dimensional square grid."""
+        """Yield triples for a two-dimensional hexagonal grid."""
         left, right, vert = self.labels
         for r1, r2 in pairwise(_hex_grid_helper(self.rows, self.columns)):
             if len(r1) == len(r2):  # minor/minor or major/major
@@ -213,18 +216,34 @@ def _hex_grid_helper(rows: int, columns: int) -> list[list[int]]:
     return rv
 
 
+def chain_factory(
+    length: int,
+    width: int = 1,
+    leaves: int = 2,
+    heterogeneous: bool = True,
+    create_inverse_triples: bool = False,
+):
+    """Create a chain."""
+    return ChainFactory(
+        length=length, width=width, leaves=leaves, heterogeneous=heterogeneous
+    ).to_pykeen(create_inverse_triples=create_inverse_triples)
+
+
 @dataclass
 class ChainFactory(Factory):
-    """A factory for a two-dimensional hexagonal grid."""
+    """A factory for a chain."""
 
-    # Number of main elements in the chain
+    #: Number of main elements in the chain
     length: int
-    # Number of elements in each chain bubble
-    width: int
+    #: Number of sub elements in each loop of the chain
+    width: int = 1
+    #: Number of prong in each loop (2 corresponds to an actual chain)
     leaves: int = 2
-    heterogeneous: bool = False
+    #: Should the different edge types be given different labels?
+    heterogeneous: bool = True
 
     def __post_init__(self):
+        """Check the arguments are valid."""
         if self.length < 2:
             raise ValueError(
                 "Length of a chain must be 2 or greater. A chain of length 1 is just a single node"
@@ -240,7 +259,7 @@ class ChainFactory(Factory):
             )
 
     def iterate_triples(self) -> Iterable[tuple[int, int, int]]:
-        """Yield triples for a two-dimensional square grid."""
+        """Yield triples for a chain."""
         if self.heterogeneous:
             begin, cont, end = 0, 1, 2
         else:

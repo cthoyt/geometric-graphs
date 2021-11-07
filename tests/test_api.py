@@ -141,7 +141,7 @@ class TestFactories(unittest.TestCase):
 
     def test_chain(self):
         """Test the chain factory."""
-        factory = ChainFactory(length=3, width=1)
+        factory = ChainFactory(length=3, width=1, heterogeneous=False)
         triples = [
             (0, 0, 1),
             (0, 0, 2),
@@ -154,7 +154,7 @@ class TestFactories(unittest.TestCase):
         ]
         self.assertEqual(triples, list(factory.get_triples()))
 
-        factory = ChainFactory(length=3, width=2)
+        factory = ChainFactory(length=3, width=2, heterogeneous=False)
         triples = [
             (0, 0, 1),
             (0, 0, 2),
