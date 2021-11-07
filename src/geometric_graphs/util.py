@@ -2,7 +2,9 @@
 
 """Utilities for geometric graphs."""
 
-from typing import Iterable, Tuple, cast
+import os
+import pathlib
+from typing import Iterable, Union, cast
 
 __all__ = [
     "Factory",
@@ -21,6 +23,16 @@ class Factory:
         """Yield triples for the graph."""
         raise NotImplementedError
 
+    @classmethod
+    def demo(cls, *args, path: Union[str, pathlib.Path, os.PathLike], **kwargs) -> None:
+        """Demo this factory with the given arguments (e.g., by drawing to the path)."""
+        inst = cls(*args, **kwargs)  # type:ignore
+        inst.draw(path=path)
+
+    def draw(self, path: Union[str, pathlib.Path, os.PathLike]) -> None:
+        """Draw the graph using GraphViz to the given file."""
+        draw(self.iterate_triples(), path)
+
     def to_pykeen(self, *, create_inverse_triples: bool = False):
         """Generate a :mod:`pykeen` triples factory for the graph.
 
@@ -34,7 +46,7 @@ class Factory:
         )
 
 
-def from_tuples(triples: Iterable[Tuple[int, int, int]], create_inverse_triples: bool = False):
+def from_tuples(triples: Iterable[tuple[int, int, int]], create_inverse_triples: bool = False):
     """Create a PyKEEN triples factory from tuples.
 
     :param triples: An iterable of integer triples
@@ -47,3 +59,21 @@ def from_tuples(triples: Iterable[Tuple[int, int, int]], create_inverse_triples:
 
     mapped_triples = cast(torch.LongTensor, torch.as_tensor(list(triples), dtype=torch.long))
     return CoreTriplesFactory.create(mapped_triples, create_inverse_triples=create_inverse_triples)
+
+
+COLORS = ["red", "blue", "green", "purple"]
+
+
+def draw(triples: Iterable[tuple[int, int, int]], path, name="", prog: str = "dot") -> None:
+    """Draw a graph using GraphViz."""
+    import pygraphviz as pgv
+
+    triples = list(triples)
+    relations = sorted(set(r for _, r, _ in triples))
+    relation_colors = dict(zip(relations, COLORS))
+
+    graph = pgv.AGraph(name=name, directed=True)
+    for h, r, t in triples:
+        graph.add_edge(h, t, color=relation_colors[r])
+
+    graph.draw(path, prog=prog)
