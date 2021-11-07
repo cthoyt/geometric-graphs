@@ -4,7 +4,7 @@
 
 import os
 import pathlib
-from typing import Iterable, Union, cast
+from typing import Iterable, Optional, Union, cast
 
 __all__ = [
     "Factory",
@@ -24,14 +24,20 @@ class Factory:
         raise NotImplementedError
 
     @classmethod
-    def demo(cls, *args, path: Union[str, pathlib.Path, os.PathLike], **kwargs) -> None:
+    def demo(
+        cls,
+        *args,
+        path: Union[str, pathlib.Path, os.PathLike],
+        name: Optional[str] = None,
+        **kwargs,
+    ) -> None:
         """Demo this factory with the given arguments (e.g., by drawing to the path)."""
         inst = cls(*args, **kwargs)  # type:ignore
-        inst.draw(path=path)
+        inst.draw(path=path, name=name)
 
-    def draw(self, path: Union[str, pathlib.Path, os.PathLike]) -> None:
+    def draw(self, path: Union[str, pathlib.Path, os.PathLike], name: Optional[str] = None) -> None:
         """Draw the graph using GraphViz to the given file."""
-        draw(self.iterate_triples(), path)
+        draw(self.iterate_triples(), path=path, name=name)
 
     def to_pykeen(self, *, create_inverse_triples: bool = False):
         """Generate a :mod:`pykeen` triples factory for the graph.
@@ -64,7 +70,9 @@ def from_tuples(triples: Iterable[tuple[int, int, int]], create_inverse_triples:
 COLORS = ["red", "blue", "green", "purple"]
 
 
-def draw(triples: Iterable[tuple[int, int, int]], path, name="", prog: str = "dot") -> None:
+def draw(
+    triples: Iterable[tuple[int, int, int]], path, name: Optional[str] = None, prog: str = "dot"
+) -> None:
     """Draw a graph using GraphViz."""
     import pygraphviz as pgv
 
@@ -72,7 +80,7 @@ def draw(triples: Iterable[tuple[int, int, int]], path, name="", prog: str = "do
     relations = sorted(set(r for _, r, _ in triples))
     relation_colors = dict(zip(relations, COLORS))
 
-    graph = pgv.AGraph(name=name, directed=True)
+    graph = pgv.AGraph(name=name or "", directed=True)
     for h, r, t in triples:
         graph.add_edge(h, t, color=relation_colors[r])
 
