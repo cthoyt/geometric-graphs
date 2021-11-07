@@ -23,6 +23,14 @@ class Factory:
         """Yield triples for the graph."""
         raise NotImplementedError
 
+    def number_of_nodes(self) -> Optional[int]:
+        """Calculate the number of nodes based on the parameters of the factory."""
+        # FIXME make not optional later
+
+    def number_of_edges(self) -> Optional[int]:
+        """Calculate the number of edges based on the parameters of the factory."""
+        # FIXME make not optional later
+
     def __iter__(self) -> Iterator[tuple[int, int, int]]:
         """Yield triples for the graph."""
         yield from self.iterate_triples()
