@@ -8,9 +8,13 @@ from .api import (  # noqa:F401
     HexagonalGrid2DFactory,
     LineFactory,
     SquareGrid2DFactory,
+    StarFactory,
+    WheelFactory,
     chain_factory,
     circle_factory,
     hex_grid_factory,
     line_factory,
     square_grid_factory,
+    star_factory,
+    wheel_factory,
 )
