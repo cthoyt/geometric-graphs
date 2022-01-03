@@ -17,6 +17,8 @@ import logging
 
 import click
 
+from .benchmark import benchmark
+
 __all__ = [
     "main",
 ]
@@ -29,6 +31,8 @@ logger = logging.getLogger(__name__)
 def main():
     """CLI for geometric_graphs."""
 
+
+main.add_command(benchmark)
 
 if __name__ == "__main__":
     main()
