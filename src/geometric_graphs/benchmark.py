@@ -27,7 +27,7 @@ __all__ = [
 DEFAULT_METRIC = "adjusted_arithmetic_mean_rank_index"
 DEFAULT_TRIALS = 13
 MODULE = pystow.module("pykeen", "geobenchmark")
-DEFAULT_EXPERIMENTS: list[dict[str, any]] = [
+DEFAULT_EXPERIMENTS: list[dict[str, Any]] = [
     {
         "generator": "SquareGrid2D",
         "generator_kwargs": {"rows": 5, "columns": 5},
@@ -45,7 +45,7 @@ DEFAULT_EXPERIMENTS: list[dict[str, any]] = [
     },
 ]
 
-models: list[tuple[str, dict[str, any], str]] = [
+models: list[tuple[str, dict[str, Any], str]] = [
     (
         "TransE",
         dict(
@@ -86,7 +86,7 @@ def get_digest(experiment, length: int = 8) -> str:
 
 
 def run(
-    experiment: dict[str, any],
+    experiment: dict[str, Any],
     *,
     trials: int = DEFAULT_TRIALS,
     device: str = "mps",
