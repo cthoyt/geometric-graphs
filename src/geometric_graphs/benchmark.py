@@ -89,7 +89,7 @@ def run(
     experiment: dict[str, any],
     *,
     trials: int = DEFAULT_TRIALS,
-    device: str = "cpu",
+    device: str = "mps",
     force: bool = False,
     model: str = "PairRE",
     model_kwargs: Optional[dict[str, Any]] = None,
@@ -100,7 +100,7 @@ def run(
     digest = get_digest(experiment)
     model = model_resolver.normalize(model)
     loss = loss_resolver.normalize(loss)
-    submodule = MODULE.submodule("experiments", digest, model, loss)
+    submodule = MODULE.module("experiments", digest, model, loss)
 
     generator = generator_resolver.make_from_kwargs(experiment, "generator")
     factory = generator.to_pykeen(create_inverse_triples=experiment["inverse"])
@@ -163,7 +163,7 @@ def run_many(experiments, trials: int, device, force: bool, metric: str):
                         repr(generator),
                         model_resolver.normalize(model),
                         loss_resolver.normalize(loss),
-                        round(result["metrics"][metric]["both"]["realistic"], 3),
+                        round(result["metrics"]["both"]["realistic"][metric], 3),
                     )
                 )
 
@@ -186,7 +186,7 @@ def run_many(experiments, trials: int, device, force: bool, metric: str):
 
 @click.command()
 @click.option("--trials", type=int, default=DEFAULT_TRIALS, show_default=True)
-@click.option("--device", default="cpu", show_default=True)
+@click.option("--device", default="mps", show_default=True)
 @click.option("--metric", default=DEFAULT_METRIC, show_default=True)
 @click.option("-f", "--force", is_flag=True)
 def benchmark(trials: int, device: str, force: bool, metric: str):
